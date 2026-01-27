@@ -10,6 +10,11 @@ Shader "Andres/R2D2"
         _StarsColor("Stars Color", Color) = (1,1,1,1)
 
         [Space(10)]
+        _ColorAtmosphere("Color Atmosphere", Color) = (1,1,1,1)
+        _AtmosphereThickness("Atmosphere Thickness", Float) = 0.1
+        _AtmospherePow("Atmosphere Power", Float) = 5
+
+        [Space(10)]
         _AmbientColor("Ambient Color", Color) = (1, 1, 1, 1)
         _BackgroundColor("Background Color", Color) = (1, 1, 1, 1)
 
@@ -80,6 +85,9 @@ Shader "Andres/R2D2"
                 half4 _StarsColor;
                 half4 _AmbientColor;
                 half4 _BackgroundColor;
+                half4 _ColorAtmosphere;
+                float _AtmosphereThickness;
+                float _AtmospherePow;
                 float _RayThreshhold;
                 int _RayMaxSteps;
                 float _RayMaxDistance;
@@ -116,13 +124,6 @@ Shader "Andres/R2D2"
                 OUT.viewVector = mul(unity_CameraToWorld, float4(viewVector,0));
 
                 return OUT;
-            }
-
-            float4 BG(){
-                
-                float4 result = _BackgroundColor;
-
-                return result;
             }
 
             float2 FinalMap(float3 pos)
@@ -210,6 +211,17 @@ Shader "Andres/R2D2"
 
                 return color;
             }
+            
+            float4 AtmospherePlanets(float3 pos)
+            {
+                float atmosphereThickness = _AtmosphereThickness;
+                float atmosphere = 1 - smoothstep(0.0,atmosphereThickness, saturate(pos / atmosphereThickness));
+
+                atmosphere = pow(atmosphere, _AtmospherePow);
+
+                float4 result = _ColorAtmosphere * atmosphere;
+                return result;
+            } 
 
             float4 rayMarching(float3 rayO, float3 rayDir, float maxD, float3 worldPos, float3 viewDir)
             {
@@ -220,11 +232,14 @@ Shader "Andres/R2D2"
                {
                     float3 origin = rayO + rayDir * distance;
                     float2 sdfDistance = FinalMap(origin); 
+                    float3 diffuse = RayMarchingHit(sdfDistance.y);
 
                     if(sdfDistance.x < _RayThreshhold)
                     {
+                        if(sdfDistance.y == 2)
+                            diffuse += AtmospherePlanets(sdfDistance.x);
+
                         float3 normal = calcNormal(rayO + rayDir * distance);
-                        float3 diffuse = RayMarchingHit(sdfDistance.y);
 
                         float3 radiance = mainLight.color * Lambert(normal, normalize(mainLight.direction)) * mainLight.shadowAttenuation;
                         float3 ambient = _AmbientColor.xyz * diffuse;
@@ -248,7 +263,7 @@ Shader "Andres/R2D2"
                     distance += sdfDistance;
                }
 
-               return BG();
+               return _BackgroundColor;
             }
 
             half4 frag(Varyings IN) : SV_Target

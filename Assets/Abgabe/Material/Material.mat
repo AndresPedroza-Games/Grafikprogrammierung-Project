@@ -104,6 +104,8 @@ Material:
     - _AnimationBaseZ: 0
     - _AnimationJump: 0
     - _AnimationZ: 0
+    - _AtmospherePow: 1
+    - _AtmosphereThickness: 0.1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -125,7 +127,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
-    - _RayMaxDistance: 500
+    - _RayMaxDistance: 708.3
     - _RayMinDistance: 0
     - _RayThreshhold: 0.001
     - _ReceiveShadows: 1
@@ -148,10 +150,11 @@ Material:
     m_Colors:
     - _AmbientColor: {r: 0.22413525, g: 0.18316123, b: 0.3962264, a: 1}
     - _AsteroidsColor: {r: 0.23899364, g: 0.19232959, b: 0.1525651, a: 1}
-    - _BackgroundColor: {r: 0.043659285, g: 0.0031149888, b: 0.09433961, a: 1}
+    - _BackgroundColor: {r: 0.05646253, g: 0.02006942, b: 0.103773594, a: 1}
     - _BaseColor: {r: 0.33935562, g: 0.5660171, b: 0.5849056, a: 1}
     - _CharacterColor: {r: 0.38352904, g: 0.39246392, b: 0.40251565, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorAtmosphere: {r: 0.46945193, g: 0.38915092, b: 0.5188679, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FloorColor: {r: 0.28930807, g: 0.20469908, b: 0.20469908, a: 1}
     - _PlanetsColor: {r: 0.5464482, g: 0, b: 2.0367596, a: 1}
