@@ -2,6 +2,10 @@ Shader "Andres/R2D2"
 {
     Properties
     {
+        _PlanetTexture("Planet Texture", 2D) = "White" {}
+        _BaseTexture("Base Texture", 2D) = "White" {}
+        _SharpValue("Sharp Value", Float) = 0.1
+
         [Space(10)]
         _CharacterColor("Character Color", Color) = (1,1,1,1)
         _FloorColor("Floor Color", Color) = (1,1,1,1)
@@ -77,7 +81,13 @@ Shader "Andres/R2D2"
                 float3 posWS : TEXCOORD2;
             };
 
+            Texture2D _PlanetTexture ;
+            SAMPLER(sampler_PlanetTexture);
+            Texture2D _BaseTexture ;
+            SAMPLER(sampler_BaseTexture);
+
             CBUFFER_START(UnityPerMaterial)
+                float _SharpValue;
                 half4 _CharacterColor;
                 half4 _FloorColor;
                 half4 _PlanetsColor;
@@ -178,6 +188,33 @@ Shader "Andres/R2D2"
                 ));
             }
 
+            float3 TriPlanarWeights(float3 normal, float sharpValue)
+            {
+                float3 absNormal = abs(normal);
+                absNormal = pow(absNormal,sharpValue);
+
+                return absNormal / (absNormal.x + absNormal.y + absNormal.z);
+            }
+
+            
+            float4 TriplanarMapping(Texture2D tex, sampler sample, float3 worldPos, float3 wordlNormal)
+            {
+                float3 weight = TriPlanarWeights(wordlNormal, _SharpValue);
+
+                float3 pos = abs(worldPos);
+                float scale = 0.005;
+
+                float2 uvX = pos.zy * scale;
+                float2 uvY = pos.xz * scale;
+                float2 uvZ = pos.xy * scale;
+
+                float4 x = tex.SampleLevel(sample,uvX,0);
+                float4 y = tex.SampleLevel(sample,uvY,0);
+                float4 z = tex.SampleLevel(sample,uvZ,0);
+
+                return x * weight.x + y * weight.y + z * weight.z;
+            }
+
             // float4 BoxMapping(sampler2D sample, float3 pos, float3 normal, float k)
             // {
             //     float4 xAxis = texture(sample, pos.yz);
@@ -189,39 +226,31 @@ Shader "Andres/R2D2"
             //     return (xAxis * weight.x + yAxis * weight.y + zAxis * weight.z) / (weight.x + weight.y + weight.z);
             // }
 
-            float3 RayMarchingHit(float mat)
+            float3 RayMarchingHit(float mat, float3 normal, float3 worldPos)
             {
                 float3 color;
+                float3 material;
 
                 if(mat == 0){
-                    color = _CharacterColor;
+                    material = _CharacterColor;
                 }
                 else if(mat == 1){
                     color = _FloorColor;
+                    material = TriplanarMapping(_BaseTexture,sampler_BaseTexture,worldPos,normal).xyz * color;
                 }
                 else if(mat == 2){
                     color = _PlanetsColor;
+                    material = TriplanarMapping(_PlanetTexture,sampler_PlanetTexture,worldPos,normal).xyz * color;
                 }
                 else if(mat == 3){
-                    color = _AsteroidsColor;
+                    material = _AsteroidsColor;
                 }
                 else{
-                    color = _StarsColor;
+                    material = _StarsColor;
                 }
 
-                return color;
+                return material;
             }
-            
-            float4 AtmospherePlanets(float3 pos)
-            {
-                float atmosphereThickness = _AtmosphereThickness;
-                float atmosphere = 1 - smoothstep(0.0,atmosphereThickness, saturate(pos / atmosphereThickness));
-
-                atmosphere = pow(atmosphere, _AtmospherePow);
-
-                float4 result = _ColorAtmosphere * atmosphere;
-                return result;
-            } 
 
             float4 rayMarching(float3 rayO, float3 rayDir, float maxD, float3 worldPos, float3 viewDir)
             {
@@ -229,17 +258,14 @@ Shader "Andres/R2D2"
                 Light mainLight = GetMainLight(TransformWorldToShadowCoord(worldPos));
 
                 for(int i = 0; i < _RayMaxSteps && distance < maxD; i++)
-               {
+                {
                     float3 origin = rayO + rayDir * distance;
-                    float2 sdfDistance = FinalMap(origin); 
-                    float3 diffuse = RayMarchingHit(sdfDistance.y);
+                    float2 sdfDistance = FinalMap(origin);
 
                     if(sdfDistance.x < _RayThreshhold)
                     {
-                        if(sdfDistance.y == 2)
-                            diffuse += AtmospherePlanets(sdfDistance.x);
-
                         float3 normal = calcNormal(rayO + rayDir * distance);
+                        float3 diffuse = RayMarchingHit(sdfDistance.y,normal,origin); 
 
                         float3 radiance = mainLight.color * Lambert(normal, normalize(mainLight.direction)) * mainLight.shadowAttenuation;
                         float3 ambient = _AmbientColor.xyz * diffuse;
@@ -260,8 +286,8 @@ Shader "Andres/R2D2"
                         return result;
                     }
 
-                    distance += sdfDistance;
-               }
+                    distance += sdfDistance.x;
+                }
 
                return _BackgroundColor;
             }
