@@ -38,7 +38,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _AsteroidsTexture:
-        m_Texture: {fileID: 2800000, guid: 8d26cc0e222f602499e61ed1c3e7a251, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
@@ -46,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseTexture:
-        m_Texture: {fileID: 2800000, guid: ad89d804688b22d41bc472420081c2de, type: 3}
+        m_Texture: {fileID: 2800000, guid: adbe2161991a33b4aaa26a80320ef8ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -90,7 +90,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RobotTexture:
-        m_Texture: {fileID: 2800000, guid: 8d26cc0e222f602499e61ed1c3e7a251, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -166,15 +166,15 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _AmbientColor: {r: 0.22413525, g: 0.18316123, b: 0.3962264, a: 1}
-    - _AsteroidsColor: {r: 0.33962262, g: 0.27758178, b: 0.22588108, a: 1}
+    - _AsteroidsColor: {r: 0.1981132, g: 0.0999911, b: 0.0999911, a: 1}
     - _BackgroundColor: {r: 0.05646253, g: 0.02006942, b: 0.103773594, a: 1}
     - _BaseColor: {r: 0.33935562, g: 0.5660171, b: 0.5849056, a: 1}
-    - _CharacterColor: {r: 0.8726415, g: 0.92358494, b: 1, a: 1}
+    - _CharacterColor: {r: 0.43810073, g: 0.47114184, b: 0.5188679, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorAtmosphere: {r: 0.3936009, g: 0.5433769, b: 0.5754717, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FloorColor: {r: 0.4716981, g: 0.29147384, b: 0.29147384, a: 1}
-    - _PlanetsColor: {r: 0.5160322, g: 0.40061182, b: 0.82456017, a: 1}
+    - _FloorColor: {r: 0.3762905, g: 0.46412373, b: 0.5283019, a: 1}
+    - _PlanetsColor: {r: 1, g: 0.6434221, b: 0.5424528, a: 1}
     - _SecondColor: {r: 0.23082057, g: 0.64926744, b: 0.8584906, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _StarsColor: {r: 0.60169053, g: 0.42666417, b: 0.9622642, a: 1}

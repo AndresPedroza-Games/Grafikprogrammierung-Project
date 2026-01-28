@@ -196,7 +196,6 @@ Shader "Andres/R2D2"
                 return absNormal / (absNormal.x + absNormal.y + absNormal.z);
             }
 
-            
             float4 TriplanarMapping(Texture2D tex, sampler sample, float3 worldPos, float3 wordlNormal)
             {
                 float3 weight = TriPlanarWeights(wordlNormal, _SharpValue);
@@ -214,17 +213,6 @@ Shader "Andres/R2D2"
 
                 return x * weight.x + y * weight.y + z * weight.z;
             }
-
-            // float4 BoxMapping(sampler2D sample, float3 pos, float3 normal, float k)
-            // {
-            //     float4 xAxis = texture(sample, pos.yz);
-            //     float4 yAxis = texture(sample, pos.xz);
-            //     float4 zAxis = texture(sample, pos.xy);    
-
-            //     float3 weight = pow(abs(normal), float3(k));
-
-            //     return (xAxis * weight.x + yAxis * weight.y + zAxis * weight.z) / (weight.x + weight.y + weight.z);
-            // }
 
             float3 RayMarchingHit(float mat, float3 normal, float3 worldPos)
             {
